@@ -3,8 +3,48 @@ import { useListResources, useListCategories, useListColleges } from "@workspace
 import { Layout } from "@/components/layout";
 import { ResourceCard, ResourceCardSkeleton } from "@/components/resource-card";
 import { Button, Select } from "@/components/ui-elements";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, ClipboardList, FileQuestion, Sparkles, Layers, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "wouter";
+
+const QUICK_SECTIONS = [
+  {
+    href: "/assignments",
+    label: "Assignments",
+    desc: "Solutions & submissions",
+    icon: ClipboardList,
+    bg: "from-orange-400 to-amber-500",
+    light: "bg-orange-50 border-orange-100",
+    text: "text-orange-600",
+  },
+  {
+    href: "/pyq",
+    label: "Previous Year Questions",
+    desc: "Past exam papers",
+    icon: FileQuestion,
+    bg: "from-violet-500 to-indigo-600",
+    light: "bg-violet-50 border-violet-100",
+    text: "text-violet-600",
+  },
+  {
+    href: "/important-topics",
+    label: "Important Topics",
+    desc: "High-weightage areas",
+    icon: Sparkles,
+    bg: "from-emerald-400 to-teal-500",
+    light: "bg-emerald-50 border-emerald-100",
+    text: "text-emerald-600",
+  },
+  {
+    href: "/papers",
+    label: "Semester Papers",
+    desc: "Branch & semester wise",
+    icon: Layers,
+    bg: "from-sky-400 to-blue-600",
+    light: "bg-sky-50 border-sky-100",
+    text: "text-sky-600",
+  },
+];
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -147,6 +187,35 @@ export default function Home() {
               )}
             </Button>
           </div>
+        </div>
+      </div>
+
+      {/* Quick Access Section Cards */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h2 className="font-display font-bold text-lg sm:text-xl text-slate-900">Quick Access</h2>
+          <Link href="/papers">
+            <span className="text-xs sm:text-sm text-primary font-semibold flex items-center gap-1 hover:underline">
+              View all <ArrowRight className="w-3 h-3" />
+            </span>
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {QUICK_SECTIONS.map(section => {
+            const Icon = section.icon;
+            return (
+              <Link key={section.href} href={section.href}>
+                <div className={`group relative rounded-xl sm:rounded-2xl border p-4 sm:p-5 cursor-pointer hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 ${section.light}`}>
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br ${section.bg} flex items-center justify-center text-white shadow-sm mb-3`}>
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <p className={`font-display font-bold text-sm sm:text-base leading-tight mb-0.5 ${section.text}`}>{section.label}</p>
+                  <p className="text-xs text-slate-500 leading-snug">{section.desc}</p>
+                  <ArrowRight className={`absolute bottom-4 right-4 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ${section.text}`} />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 

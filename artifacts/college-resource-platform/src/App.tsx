@@ -11,6 +11,10 @@ import UploadPage from "@/pages/upload";
 import ProfilePage from "@/pages/profile";
 import BookmarksPage from "@/pages/bookmarks";
 import AdminPage from "@/pages/admin";
+import AssignmentsPage from "@/pages/assignments";
+import PYQPage from "@/pages/pyq";
+import ImportantTopicsPage from "@/pages/important-topics";
+import PapersPage from "@/pages/papers";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -33,6 +37,10 @@ function Router() {
       <Route path="/profile" component={ProfilePage} />
       <Route path="/bookmarks" component={BookmarksPage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/assignments" component={AssignmentsPage} />
+      <Route path="/pyq" component={PYQPage} />
+      <Route path="/important-topics" component={ImportantTopicsPage} />
+      <Route path="/papers" component={PapersPage} />
       <Route component={NotFound} />
     </Switch>
   );
