@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "College Resource Platform"
+version = "1.0.0"
+id = "artifacts/college-resource-platform"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 22838
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/college-resource-platform run dev"
+
+[services.env]
+PORT = "22838"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/college-resource-platform", "run", "build"]
+publicDir = "artifacts/college-resource-platform/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
