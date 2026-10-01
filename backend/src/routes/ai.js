@@ -3,9 +3,7 @@ import { requireAuth } from "../middleware/auth.js";
 import { db, resourcesTable, filesTable, collegesTable } from "@workspace/db";
 import { eq, ilike, and, or } from "drizzle-orm";
 import { GoogleGenAI } from "@google/genai";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
+import pdfParse from "pdf-parse";
 import multer from "multer";
 
 const router = Router();
