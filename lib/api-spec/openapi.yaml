@@ -25,6 +25,14 @@ tags:
     description: College management
   - name: categories
     description: Category management
+  - name: likes
+    description: Like operations
+  - name: discussions
+    description: Discussion and Q&A operations
+  - name: reports
+    description: Content moderation operations
+  - name: notifications
+    description: User notifications
   - name: admin
     description: Admin operations
 
@@ -161,6 +169,18 @@ paths:
           schema:
             type: integer
         - name: fileType
+          in: query
+          schema:
+            type: string
+        - name: topic
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: integer
+        - name: examType
           in: query
           schema:
             type: string
@@ -658,6 +678,113 @@ paths:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
 
+
+  /resources/{id}/like:
+    post:
+      operationId: likeResource
+      tags: [likes]
+      summary: Like a resource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Liked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+    delete:
+      operationId: unlikeResource
+      tags: [likes]
+      summary: Unlike a resource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Unliked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: Get user notifications
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationsListResponse"
+
+  /notifications/{id}/read:
+    put:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /users/{id}/profile:
+    get:
+      operationId: getUserProfilePublic
+      tags: [users]
+      summary: Get public user profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicUserProfile"
+
+  /ai/assist:
+    post:
+      operationId: aiAssist
+      tags: [resources]
+      summary: Get AI assistance for a resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiAssistRequest"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAssistResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -855,12 +982,25 @@ components:
           nullable: true
         ratingCount:
           type: integer
+        likesCount:
+          type: integer
+        isLiked:
+          type: boolean
         isBookmarked:
           type: boolean
+        topic:
+          type: string
+          nullable: true
+        academicYear:
+          type: integer
+          nullable: true
+        examType:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time
-      required: [id, title, fileName, fileType, fileSize, fileUrl, downloadCount, viewCount, status, uploaderId, uploaderName, ratingCount, isBookmarked, createdAt, tags]
+      required: [id, title, fileName, fileType, fileSize, fileUrl, downloadCount, viewCount, status, uploaderId, uploaderName, ratingCount, likesCount, isLiked, isBookmarked, createdAt, tags]
 
     ResourceDetail:
       allOf:
@@ -920,6 +1060,12 @@ components:
           type: integer
         collegeId:
           type: integer
+        topic:
+          type: string
+        academicYear:
+          type: integer
+        examType:
+          type: string
       required: [title, fileName, fileType, fileSize, fileUrl]
 
     UpdateResourceRequest:
@@ -941,6 +1087,12 @@ components:
             type: string
         categoryId:
           type: integer
+        topic:
+          type: string
+        academicYear:
+          type: integer
+        examType:
+          type: string
 
     Comment:
       type: object
@@ -992,6 +1144,9 @@ components:
         state:
           type: string
           nullable: true
+        university:
+          type: string
+          nullable: true
         resourceCount:
           type: integer
         memberCount:
@@ -1011,6 +1166,8 @@ components:
         city:
           type: string
         state:
+          type: string
+        university:
           type: string
       required: [name]
 
@@ -1088,3 +1245,80 @@ components:
         reason:
           type: string
       required: [status]
+
+
+    PublicUserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        collegeName:
+          type: string
+          nullable: true
+        university:
+          type: string
+          nullable: true
+        branch:
+          type: string
+          nullable: true
+        semester:
+          type: integer
+          nullable: true
+        uploadedMaterials:
+          type: integer
+        likesReceived:
+          type: integer
+      required: [id, name, uploadedMaterials, likesReceived]
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+        isRead:
+          type: boolean
+        link:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, userId, type, message, isRead, createdAt]
+
+    NotificationsListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Notification"
+
+    AiAssistRequest:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+        prompt:
+          type: string
+        action:
+          type: string
+          enum: [summarize, qa, flashcards, mcq]
+      required: [resourceId, prompt, action]
+
+    AiAssistResponse:
+      type: object
+      properties:
+        response:
+          type: string
+      required: [response]
