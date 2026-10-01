@@ -49,12 +49,11 @@ router.post("/", requireAuth, (req, res, next) => {
       fileData: fileData
     }).returning();
     
-    // We will serve this file via a new endpoint /api/files/:id
+    // Return relative URL so Vercel can route it properly without hardcoding hosts
     const fileUrl = `/api/files/${insertedFile.id}`;
-    const fullUrl = `${req.protocol}://${req.get("host")}${fileUrl}`;
     
     res.status(200).json({
-      url: fullUrl,
+      url: fileUrl,
       fileName: req.file.originalname,
       fileSize: req.file.size,
       fileType: type.mime,

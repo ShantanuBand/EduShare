@@ -26,7 +26,7 @@ const uploadSchema = z.object({
   title: z.string().min(3, "Title is required"),
   description: z.string().optional(),
   fileType: z.string().min(1, "File type is required"),
-  fileUrl: z.string().url("Must be a valid URL"),
+  fileUrl: z.string().min(1, "File URL is required"),
   fileName: z.string().min(1, "File name is required"),
   fileSize: z.coerce.number().min(1, "File size is required"),
   subject: z.string().optional(),
